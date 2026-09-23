@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Delete Your Account — Plotika</title>
+<meta name="description" content="Request deletion of your Plotika account and all associated data.">
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fbfaf8;
+    --surface: #ffffff;
+    --text: #1d1b19;
+    --muted: #5f5a54;
+    --line: #e5e1db;
+    --accent: #b4522b;
+    --accent-soft: #fdf1ea;
+    --danger: #b3261e;
+    --danger-soft: #fdecea;
+    --ok: #1d6b3f;
+    --ok-soft: #e9f5ee;
+    --field: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --bg: #141312;
+      --surface: #1c1a19;
+      --text: #f0ede9;
+      --muted: #a8a19a;
+      --line: #322e2b;
+      --accent: #e08a62;
+      --accent-soft: #2a201b;
+      --danger: #f2b8b5;
+      --danger-soft: #2d1b1a;
+      --ok: #7fd4a0;
+      --ok-soft: #16271d;
+      --field: #232120;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  [hidden] { display: none !important; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px 80px; }
+  header {
+    padding: 56px 0 26px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 32px;
+  }
+  .eyebrow {
+    display: inline-block;
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 5px 11px; border-radius: 999px; margin-bottom: 18px;
+  }
+  h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 12px; }
+  .meta { color: var(--muted); font-size: 14px; margin: 0; }
+  h2 { font-size: 20px; letter-spacing: -0.01em; margin: 38px 0 12px; }
+  p { margin: 0 0 14px; }
+  ul, ol { padding-left: 22px; margin: 0 0 14px; }
+  li { margin-bottom: 7px; }
+  a { color: var(--accent); }
+  strong { font-weight: 650; }
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px 22px; margin: 18px 0;
+  }
+  .card p:last-child, .card ul:last-child, .card ol:last-child { margin-bottom: 0; }
+  .card.warn { border-color: var(--danger); background: var(--danger-soft); }
+  .table-scroll { overflow-x: auto; margin: 18px 0; }
+  table { border-collapse: collapse; width: 100%; min-width: 480px; font-size: 15px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+
+  form { margin: 0; }
+  .field { margin-bottom: 18px; }
+  label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 6px; }
+  .hint { color: var(--muted); font-size: 13.5px; margin: 0 0 8px; }
+  input[type=email], select, textarea {
+    width: 100%; padding: 12px 14px; font: inherit; font-size: 16px;
+    color: var(--text); background: var(--field);
+    border: 1px solid var(--line); border-radius: 10px;
+  }
+  input[type=email]:focus, select:focus, textarea:focus, button:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: 2px;
+  }
+  textarea { min-height: 92px; resize: vertical; }
+  .check { display: flex; gap: 11px; align-items: flex-start; }
+  .check input { margin-top: 4px; width: 18px; height: 18px; flex: none; accent-color: var(--accent); }
+  .check label { font-weight: 400; font-size: 15px; margin: 0; }
+  button {
+    width: 100%; padding: 15px 20px; font: inherit; font-weight: 650; font-size: 16px;
+    color: #fff; background: var(--danger); border: 0; border-radius: 10px; cursor: pointer;
+  }
+  @media (prefers-color-scheme: dark) { button { color: #2d1b1a; } }
+  button:hover:not(:disabled) { filter: brightness(1.08); }
+  button:disabled { opacity: .6; cursor: not-allowed; }
+  .spinner {
+    display: inline-block; width: 15px; height: 15px; vertical-align: -2px; margin-right: 9px;
+    border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2s; } }
+  .status { border-radius: 14px; padding: 22px; border: 1px solid; }
+  .status.progress { background: var(--ok-soft); border-color: var(--ok); }
+  .status.error { background: var(--danger-soft); border-color: var(--danger); }
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--ok); margin-bottom: 12px;
+  }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--ok); animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+  .status h3 { margin: 0 0 10px; font-size: 20px; }
+  .ref {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px;
+    color: var(--muted); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin: 14px 0;
+    word-break: break-all;
+  }
+  .linkbtn {
+    background: none; border: 0; color: var(--accent); font: inherit; font-size: 14.5px;
+    text-decoration: underline; cursor: pointer; padding: 0; width: auto; font-weight: 500;
+  }
+  footer {
+    margin-top: 50px; padding-top: 22px; border-top: 1px solid var(--line);
+    color: var(--muted); font-size: 14px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <span class="eyebrow">Account</span>
+  <h1>Delete your Plotika account</h1>
+  <p class="meta">Plotika &middot; <code>live.plotly.app</code> &middot; Last updated 23 September 2026</p>
+</header>
+
+<p>You can permanently delete your Plotika account and the data associated with it. There are two ways to do this — both result in the same permanent deletion.</p>
+
+<h2>Option 1 — Delete directly in the app (fastest)</h2>
+<div class="card">
+  <p>Open Plotika and go to <strong>Profile &rarr; Settings &rarr; Delete account</strong>. Confirm when prompted. Your account is deleted immediately and you are signed out on every device.</p>
+</div>
+
+<h2>Option 2 — Request deletion from this page</h2>
+<p>If you no longer have the app installed or cannot sign in, submit the form below. We will verify the request and delete your account within <strong>30 days</strong>.</p>
+
+<div class="card warn">
+  <p><strong>This cannot be undone.</strong> Deleting your account permanently removes your learning history, saved stories and notes. It does not automatically cancel a paid subscription — cancel that separately in the <a href="https://apps.apple.com/account/subscriptions" rel="noopener">App&nbsp;Store</a> or <a href="https://play.google.com/store/account/subscriptions" rel="noopener">Google&nbsp;Play</a>.</p>
+</div>
+
+<!-- ============ FORM ============ -->
+<section id="formSection">
+  <form id="deleteForm" novalidate>
+    <div class="field">
+      <label for="email">Email address on your account</label>
+      <p class="hint">Use the address you signed in with. If you used Sign in with Apple and hid your email, enter the <code>@privaterelay.appleid.com</code> address Apple gave you.</p>
+      <input type="email" id="email" name="email" autocomplete="email" required placeholder="you@example.com">
+    </div>
+
+    <div class="field">
+      <label for="provider">How did you sign in?</label>
+      <select id="provider" name="provider">
+        <option value="Not sure">Not sure</option>
+        <option value="Google">Google</option>
+        <option value="Apple">Apple</option>
+        <option value="GitHub">GitHub</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="note">Anything else we should know? <span style="font-weight:400;color:var(--muted)">(optional)</span></label>
+      <textarea id="note" name="note" placeholder="Optional — a reason, or a second email address you may have used."></textarea>
+    </div>
+
+    <div class="field check">
+      <input type="checkbox" id="confirm" name="confirm" required>
+      <label for="confirm">I understand that this permanently deletes my Plotika account and all of my learning data, and that this action cannot be undone.</label>
+    </div>
+
+    <p id="formError" class="hint" style="color:var(--danger);font-weight:600" hidden></p>
+
+    <button type="submit" id="submitBtn">Request account deletion</button>
+    <p class="hint" style="margin-top:12px;text-align:center">You will receive a confirmation email once your request is received.</p>
+  </form>
+</section>
+
+<!-- ============ IN PROGRESS ============ -->
+<section id="progressSection" hidden>
+  <div class="status progress">
+    <span class="chip"><span class="dot"></span> Request in progress</span>
+    <h3>Your deletion request has been received</h3>
+    <p>We are processing the request for <strong id="progressEmail"></strong>. A confirmation email has been sent to that address.</p>
+    <div class="ref" id="progressRef"></div>
+    <p style="margin-bottom:8px"><strong>What happens next</strong></p>
+    <ol>
+      <li>We verify that the request comes from the account owner.</li>
+      <li>Your account and personal data are permanently deleted, normally within a few days and always within <strong>30 days</strong>.</li>
+      <li>You receive a final email confirming the deletion is complete.</li>
+    </ol>
+    <p style="margin-top:14px">Questions about this request? Email <a href="mailto:nikhilbiju67@gmail.com">nikhilbiju67@gmail.com</a>.</p>
+    <p style="margin-bottom:0"><button type="button" class="linkbtn" id="resetBtn">Submit another request</button></p>
+  </div>
+</section>
+
+<!-- ============ ERROR ============ -->
+<section id="errorSection" hidden>
+  <div class="status error">
+    <h3>We could not submit your request</h3>
+    <p id="errorDetail">Something went wrong while sending your request.</p>
+    <p>Please email <a href="mailto:nikhilbiju67@gmail.com?subject=Plotika%20account%20deletion%20request">nikhilbiju67@gmail.com</a> with the subject <strong>"Plotika account deletion request"</strong> from the address on your account. We will process it the same way.</p>
+    <p style="margin-bottom:0"><button type="button" class="linkbtn" id="retryBtn">Try the form again</button></p>
+  </div>
+</section>
+
+<h2>What gets deleted</h2>
+<div class="table-scroll">
+<table>
+  <thead><tr><th>Deleted permanently</th><th>Retained, and why</th></tr></thead>
+  <tbody>
+    <tr>
+      <td>
+        Your profile and sign-in identity<br>
+        Saved stories and bookmarks<br>
+        Reading progress, sessions and views<br>
+        Likes, ratings and reports<br>
+        Saved words and notes<br>
+        App preferences and settings<br>
+        Push notification tokens
+      </td>
+      <td>
+        Purchase and transaction records, for as long as tax and accounting law requires. These are held by Apple and Google, not by us.<br><br>
+        Aggregated, anonymised usage statistics that can no longer identify you.
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<p>Deletion is permanent. We cannot restore an account, its progress or its saved content after it has been deleted.</p>
+
+<footer>
+  <p><a href="../">Privacy Policy</a></p>
+  <p style="margin-bottom:0">&copy; 2026 Plotika. All rights reserved.</p>
+</footer>
+
+</div>
+
+<script>
+(function () {
+  var ENDPOINT = 'https://formsubmit.co/ajax/nikhilbiju67@gmail.com';
+  var STORE_KEY = 'plotika_deletion_request';
+
+  var form = document.getElementById('deleteForm');
+  var formSection = document.getElementById('formSection');
+  var progressSection = document.getElementById('progressSection');
+  var errorSection = document.getElementById('errorSection');
+  var submitBtn = document.getElementById('submitBtn');
+  var formError = document.getElementById('formError');
+
+  function show(section) {
+    formSection.hidden = section !== 'form';
+    progressSection.hidden = section !== 'progress';
+    errorSection.hidden = section !== 'error';
+  }
+
+  function showProgress(email, iso) {
+    document.getElementById('progressEmail').textContent = email;
+    var when = iso;
+    try { when = new Date(iso).toLocaleString(); } catch (e) {}
+    document.getElementById('progressRef').textContent = 'Request submitted: ' + when;
+    show('progress');
+  }
+
+  function remember(email, iso) {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ email: email, ts: iso })); } catch (e) {}
+  }
+
+  function forget() {
+    try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  }
+
+  // Restore an in-progress request on repeat visits.
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+    if (saved && saved.email) { showProgress(saved.email, saved.ts); }
+  } catch (e) {}
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    forget();
+    form.reset();
+    formError.hidden = true;
+    show('form');
+  });
+
+  document.getElementById('retryBtn').addEventListener('click', function () {
+    show('form');
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    formError.hidden = true;
+
+    var email = document.getElementById('email').value.trim();
+    var confirmed = document.getElementById('confirm').checked;
+
+    if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 0) {
+      formError.textContent = 'Please enter the email address on your account.';
+      formError.hidden = false;
+      document.getElementById('email').focus();
+      return;
+    }
+    if (!confirmed) {
+      formError.textContent = 'Please confirm that you understand deletion is permanent.';
+      formError.hidden = false;
+      document.getElementById('confirm').focus();
+      return;
+    }
+
+    var iso = new Date().toISOString();
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span>Sending your request…';
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'Plotika — account deletion request',
+        _template: 'table',
+        _captcha: 'false',
+        _autoresponse: 'We have received your request to delete your Plotika account. Your request is in progress. We will verify it and permanently delete your account and personal data within 30 days, and email you again once it is complete. If you did not make this request, reply to this email immediately.',
+        name: 'Plotika account deletion',
+        email: email,
+        'Sign-in method': document.getElementById('provider').value,
+        'Additional notes': document.getElementById('note').value.trim() || '(none)',
+        'Confirmed permanent deletion': 'Yes',
+        'Submitted at (UTC)': iso,
+        'Submitted from': navigator.userAgent
+      })
+    })
+      .then(function (res) {
+        if (!res.ok) { throw new Error('HTTP ' + res.status); }
+        return res.json().catch(function () { return {}; });
+      })
+      .then(function () {
+        remember(email, iso);
+        showProgress(email, iso);
+      })
+      .catch(function (err) {
+        document.getElementById('errorDetail').textContent =
+          'Something went wrong while sending your request (' + err.message + ').';
+        show('error');
+      })
+      .then(function () {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Request account deletion';
+      });
+  });
+})();
+</script>
+</body>
+</html>
